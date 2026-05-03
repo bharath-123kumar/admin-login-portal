@@ -5,3 +5,4 @@ pyjwt
 werkzeug
 gunicorn
 flask-migrate
+python-dotenv

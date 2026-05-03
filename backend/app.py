@@ -4,7 +4,10 @@ from models import db
 from config import Config
 from routes.auth import auth_bp
 from routes.opportunities import opp_bp
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 def create_app():
     app = Flask(__name__)
