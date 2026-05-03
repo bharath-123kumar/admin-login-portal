@@ -40,7 +40,7 @@ def create(current_user):
 @opp_bp.route('/<int:id>', methods=['GET'])
 @token_required
 def get_one(current_user, id):
-    opp = Opportunity.query.get_or_404(id)
+    opp = db.get_or_404(Opportunity, id)
     if opp.admin_id != current_user.id:
         return jsonify({'error': 'Unauthorized'}), 403
     return jsonify(opp.to_dict())
@@ -48,7 +48,7 @@ def get_one(current_user, id):
 @opp_bp.route('/<int:id>', methods=['PUT'])
 @token_required
 def update(current_user, id):
-    opp = Opportunity.query.get_or_404(id)
+    opp = db.get_or_404(Opportunity, id)
     if opp.admin_id != current_user.id:
         return jsonify({'error': 'Unauthorized'}), 403
         
@@ -68,7 +68,7 @@ def update(current_user, id):
 @opp_bp.route('/<int:id>', methods=['DELETE'])
 @token_required
 def delete(current_user, id):
-    opp = Opportunity.query.get_or_404(id)
+    opp = db.get_or_404(Opportunity, id)
     if opp.admin_id != current_user.id:
         return jsonify({'error': 'Unauthorized'}), 403
         

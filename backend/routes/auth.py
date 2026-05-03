@@ -19,9 +19,16 @@ def token_required(f):
         
         try:
             data = jwt.decode(token, current_app.config['JWT_SECRET_KEY'], algorithms=["HS256"])
-            current_user = Admin.query.get(data['user_id'])
-        except:
+            current_user = db.session.get(Admin, data['user_id'])
+            if not current_user:
+                return jsonify({'error': 'User not found!'}), 401
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token has expired!'}), 401
+        except jwt.InvalidTokenError:
             return jsonify({'error': 'Token is invalid!'}), 401
+        except Exception as e:
+            print(f"Auth error: {str(e)}")
+            return jsonify({'error': 'Authentication failed!'}), 401
         
         return f(current_user, *args, **kwargs)
     
@@ -69,7 +76,7 @@ def login():
     # Generate JWT
     token = jwt.encode({
         'user_id': admin.id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)
     }, current_app.config['JWT_SECRET_KEY'], algorithm="HS256")
     
     return jsonify({
@@ -93,7 +100,7 @@ def forgot_password():
     if admin:
         token = secrets.token_urlsafe(32)
         admin.reset_token = token
-        admin.reset_token_expiry = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        admin.reset_token_expiry = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
         db.session.commit()
         
         # Log to console as per requirement

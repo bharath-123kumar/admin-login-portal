@@ -6,3 +6,6 @@ instance/
 .DS_Store
 qatar_foundation.db
 .env
+node_modules/
+dist/
+.vercel
