@@ -22,6 +22,10 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix='/api')
     app.register_blueprint(opp_bp, url_prefix='/api/opportunities')
     
+    @app.route('/')
+    def index():
+        return {"message": "Welcome to the QF Admin Portal API", "status": "running"}
+    
     return app
 
 app = create_app()
